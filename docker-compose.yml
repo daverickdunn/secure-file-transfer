@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+    receive:
+        image: receive
+        container_name: receiver
+        build:
+            context: ./receive
+        networks:
+            - transfer_network
+        environment:
+            - TRANSFER_SECRET_KEY
+            - TRANSFER_IV456
+        volumes:
+            - ./:/tmp
+    send:
+        image: send
+        container_name: sender
+        build:
+            context: ./send
+        networks:
+            - transfer_network
+        environment:
+            - TRANSFER_SECRET_KEY
+            - TRANSFER_IV456
+            - FILENAMES
+        volumes:
+            - ./:/tmp
+        depends_on:
+            - receive
+
+networks:
+    transfer_network:
+        driver: bridge
